@@ -1,34 +1,47 @@
 import React, { useState } from 'react'
 
 //renders buttons
-const Button = ({ handleClick, text }) => 
-  <button onClick={handleClick}>
-    {text}
-  </button>
+const Button = ({ handleClick, text }) => {
+  return (
+    <button onClick={handleClick}>
+      {text}
+    </button>
+  )
+}
 
 //renders all statistics
 const Statistics = ({ good, neutral, bad }) => {
-  if (good || neutral || bad) {
+  //only renders statistics when one or more values have been increased
+  if (good !== 0 || neutral !== 0 || bad !== 0) {
     return (
-      <>
-        <StatisticLine text='good' value={good} />
-        <StatisticLine text='neutral' value={neutral} />
-        <StatisticLine text='bad' value={bad} />
-        <StatisticLine text='all' value={good + bad + neutral} />
-        <StatisticLine text='average' value={(good - bad) / (good + bad + neutral)} />
-        <StatisticLine text='positive' value={good / (good + bad + neutral)} />
-      </>
+      <table>
+        <tbody>
+          <StatisticLine text='good' value={good} />
+          <StatisticLine text='neutral' value={neutral} />
+          <StatisticLine text='bad' value={bad} />
+          <StatisticLine text='all' value={good + bad + neutral} />
+          <StatisticLine text='average' value={(good - bad) / (good + bad + neutral)} />
+          <StatisticLine text='positive' value={(good / (good + bad + neutral))*100 + ' %'} />
+        </tbody>
+      </table>
     )
   } 
+  //if no values have been increased yet
   return (
     <h3>No feedback given</h3>
   )
 }
 
 
-//renders one line of statistics
-const StatisticLine = ({ text, value }) => <p> {text} {value} </p>
-
+//renders one html table row
+const StatisticLine = ({ text, value }) => {
+  return(
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  )
+}
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
