@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
@@ -6,20 +7,24 @@ import Persons from './components/Persons'
 
 const App = () => {
 
-  //stores all persons in an array
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log(response.data)
+        setPersons(response.data)
+      })
+  }, [])
+
+  //array storing all persons
+  const [ persons, setPersons ] = useState([])
 
   //used to keep track of input states
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filterName, setFilterName ] = useState('')
 
-  //used for filtering what people to show
+  //boolean used for filtering
   const [showAll, setShowAll] = useState(true)
 
   //returns all persons if showAll is true, otherwise only returns persons that match filter
