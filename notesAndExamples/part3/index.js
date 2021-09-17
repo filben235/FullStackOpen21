@@ -1,8 +1,23 @@
 const express = require('express')
 const app = express()
 
+//allows cross origin requests
+const cors = require('cors')
+app.use(cors())
+
 //takes the JSON data of a request, transforms it into a JavaScript object and then attaches it to the body property of the request object
 app.use(express.json())
+
+//prints information about every request that is sent to the server
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+
+app.use(requestLogger)
 
 let notes = [
   {
@@ -83,7 +98,14 @@ const generateId = () => {
     return maxId + 1
 }
 
-const PORT = 3001
+//used for catching requests made to non-existent routes
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
